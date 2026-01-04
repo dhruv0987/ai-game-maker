@@ -1,0 +1,8 @@
+{
+  "name": "The AI App Factory",
+  "description": "A magical workshop where kids can build real web apps using AI!",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
