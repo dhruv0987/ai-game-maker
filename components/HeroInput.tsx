@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Rocket } from 'lucide-react';
 import { COLORS, SAMPLE_IDEAS } from '../constants';
+import * as SoundEngine from '../utils/soundEngine';
 
 interface HeroInputProps {
   onSubmit: (idea: string) => void;
@@ -11,7 +12,15 @@ const HeroInput: React.FC<HeroInputProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (idea.trim()) onSubmit(idea);
+    if (idea.trim()) {
+      SoundEngine.playClick();
+      onSubmit(idea);
+    }
+  };
+
+  const handleSampleClick = (sample: string) => {
+    SoundEngine.playClick();
+    setIdea(sample);
   };
 
   return (
@@ -40,6 +49,7 @@ const HeroInput: React.FC<HeroInputProps> = ({ onSubmit }) => {
           <button
             type="submit"
             disabled={!idea.trim()}
+            onMouseEnter={() => SoundEngine.playHover()}
             className="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white p-4 rounded-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-bold"
           >
             <span>Build</span>
@@ -54,7 +64,8 @@ const HeroInput: React.FC<HeroInputProps> = ({ onSubmit }) => {
           {SAMPLE_IDEAS.map((sample) => (
             <button
               key={sample}
-              onClick={() => setIdea(sample)}
+              onMouseEnter={() => SoundEngine.playHover()}
+              onClick={() => handleSampleClick(sample)}
               className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-sm text-cyan-300 border border-cyan-900 hover:border-cyan-500 transition-colors"
             >
               {sample}

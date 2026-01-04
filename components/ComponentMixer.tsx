@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Image, Music, Zap, Star } from 'lucide-react';
 import { COLORS } from '../constants';
+import * as SoundEngine from '../utils/soundEngine';
 
 interface ComponentMixerProps {
   message: string;
@@ -9,6 +10,7 @@ interface ComponentMixerProps {
 const Ingredient = ({ icon: Icon, label, onClick }: { icon: any, label: string, onClick: () => void }) => (
   <button 
     onClick={onClick}
+    onMouseEnter={() => SoundEngine.playHover()}
     className="flex flex-col items-center justify-center p-4 bg-white/10 rounded-xl hover:bg-white/20 transition-all transform hover:scale-105 active:scale-95 cursor-grab active:cursor-grabbing border border-white/20"
   >
     <Icon size={32} className="mb-2 text-white" />
@@ -28,6 +30,7 @@ const ComponentMixer: React.FC<ComponentMixerProps> = ({ message }) => {
   const [count, setCount] = useState(0);
 
   const addIngredient = (e: React.MouseEvent) => {
+    SoundEngine.playPop(); // Play sound!
     const rect = (e.target as HTMLElement).getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppState, AppStage, OptionItem } from './types';
 import { COLORS } from './constants';
 import * as Gemini from './services/geminiService';
+import * as SoundEngine from './utils/soundEngine';
 
 // Components
 import HeroInput from './components/HeroInput';
@@ -9,6 +10,7 @@ import OptionSelector from './components/OptionSelector';
 import ComponentMixer from './components/ComponentMixer';
 import AppSandbox from './components/AppSandbox';
 import JargonTranslator from './components/JargonTranslator';
+import AudioControl from './components/AudioControl';
 
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>({
@@ -23,6 +25,11 @@ const App: React.FC = () => {
     loadingMessage: '',
   });
 
+  // Duck music when in the build/live phase to allow the user to focus or hear their own app
+  useEffect(() => {
+    SoundEngine.duckMusic(state.stage === 'LIVE');
+  }, [state.stage]);
+
   // Helper to update specific parts of state
   const updateState = (updates: Partial<AppState>) => {
     setState(prev => ({ ...prev, ...updates }));
@@ -30,6 +37,7 @@ const App: React.FC = () => {
 
   // 1. Handle User Idea Submission
   const handleIdeaSubmit = async (idea: string) => {
+    SoundEngine.playMagic();
     updateState({ 
       stage: 'DESIGN', 
       userIdea: idea, 
@@ -39,6 +47,7 @@ const App: React.FC = () => {
 
     try {
       const options = await Gemini.generateDesignOptions(idea);
+      SoundEngine.playMagic();
       updateState({ 
         designOptions: options, 
         loading: false 
@@ -61,6 +70,7 @@ const App: React.FC = () => {
 
     try {
       const options = await Gemini.generateLogicOptions(state.userIdea, option.title);
+      SoundEngine.playMagic();
       updateState({
         logicOptions: options,
         loading: false
@@ -84,6 +94,7 @@ const App: React.FC = () => {
 
     try {
       const code = await Gemini.generateAppCode(state.userIdea, state.selectedDesign, option);
+      SoundEngine.playMagic();
       updateState({
         generatedCode: code,
         stage: 'LIVE',
@@ -96,6 +107,7 @@ const App: React.FC = () => {
   };
 
   const restartApp = () => {
+    SoundEngine.playClick();
     updateState({
       stage: 'IDLE',
       userIdea: '',
@@ -166,8 +178,9 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Educational Overlay */}
+      {/* Controllers */}
       <JargonTranslator currentTip={activeTip} />
+      <AudioControl />
     </div>
   );
 };

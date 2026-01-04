@@ -7,6 +7,9 @@ export const COLORS = {
   error: '#FF4500',
 };
 
+// Royalty-free Lo-Fi track (Creative Commons or similar use)
+export const LOFI_MUSIC_URL = "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3"; 
+
 export const SAMPLE_IDEAS = [
   "A space game where I dodge asteroids",
   "A drawing app that sparkles",

@@ -2,6 +2,7 @@ import React from 'react';
 import { OptionItem } from '../types';
 import { COLORS } from '../constants';
 import { CheckCircle } from 'lucide-react';
+import * as SoundEngine from '../utils/soundEngine';
 
 interface OptionSelectorProps {
   title: string;
@@ -20,7 +21,11 @@ const OptionSelector: React.FC<OptionSelectorProps> = ({ title, options, onSelec
         {options.map((option, index) => (
           <button
             key={option.id}
-            onClick={() => onSelect(option)}
+            onMouseEnter={() => SoundEngine.playHover()}
+            onClick={() => {
+              SoundEngine.playMagic(); // Special sound for selection
+              onSelect(option);
+            }}
             className="group relative flex flex-col items-center p-8 rounded-2xl transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl text-left border-2 border-transparent hover:border-cyan-400"
             style={{ 
               backgroundColor: 'rgba(255, 255, 255, 0.05)',
