@@ -1,8 +1,15 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { OptionItem } from "../types";
 
-// Initialize Gemini
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to get the AI instance safely
+const getAI = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    console.error("API_KEY is missing. Please set it in your environment variables.");
+    throw new Error("Missing API Key");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 const modelFlash = 'gemini-3-flash-preview'; 
 
@@ -22,6 +29,7 @@ export const generateDesignOptions = async (idea: string): Promise<OptionItem[]>
   };
 
   try {
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: modelFlash,
       contents: `The user (a child) wants to build an app with this idea: "${idea}". 
@@ -40,7 +48,7 @@ export const generateDesignOptions = async (idea: string): Promise<OptionItem[]>
     return JSON.parse(text) as OptionItem[];
   } catch (error) {
     console.error("Design Gen Error:", error);
-    // Fallback if AI fails
+    // Fallback if AI fails or key is missing
     return [
       { id: '1', title: 'Neon Arcade', description: 'Bright glowing lights and dark backgrounds.', tip: 'High contrast makes things easy to see!' },
       { id: '2', title: 'Paper Sketch', description: 'Looks like it was drawn in a notebook.', tip: 'Hand-drawn styles feel friendly and personal.' },
@@ -65,6 +73,7 @@ export const generateLogicOptions = async (idea: string, design: string): Promis
   };
 
   try {
+    const ai = getAI();
     const response = await ai.models.generateContent({
       model: modelFlash,
       contents: `The user is building a "${design}" style app about "${idea}". 
@@ -93,6 +102,7 @@ export const generateLogicOptions = async (idea: string, design: string): Promis
 
 export const generateAppCode = async (idea: string, design: OptionItem, logic: OptionItem): Promise<string> => {
   try {
+    const ai = getAI();
     const prompt = `
       Act as an expert web developer for kids.
       Create a SINGLE HTML file containing HTML, CSS, and JavaScript.
@@ -133,6 +143,6 @@ export const generateAppCode = async (idea: string, design: OptionItem, logic: O
 
   } catch (error) {
     console.error("Code Gen Error:", error);
-    return `<html><body><h1 style="color:white; text-align:center;">Oh no! The code elves got confused. Try again!</h1></body></html>`;
+    return `<html><body><h1 style="color:white; text-align:center;">Oh no! The code elves got confused. Try again!</h1><p style="text-align:center; color: #aaa;">(Check your API Key)</p></body></html>`;
   }
 };
