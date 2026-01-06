@@ -178,6 +178,11 @@ const App: React.FC = () => {
         )}
       </main>
 
+      {/* Footer Copyright */}
+      <footer className="w-full text-center py-4 text-gray-500 text-sm font-bold tracking-widest uppercase opacity-60 z-10 hover:opacity-100 transition-opacity">
+        Done by Druv
+      </footer>
+
       {/* Controllers */}
       <JargonTranslator currentTip={activeTip} />
       <AudioControl />

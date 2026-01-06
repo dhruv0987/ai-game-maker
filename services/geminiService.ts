@@ -3,12 +3,9 @@ import { OptionItem } from "../types";
 
 // Helper to get the AI instance safely
 const getAI = () => {
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    console.error("API_KEY is missing. Please set it in your environment variables.");
-    throw new Error("Missing API Key");
-  }
-  return new GoogleGenAI({ apiKey });
+  // The API key must be obtained exclusively from the environment variable process.env.API_KEY.
+  // Assume this variable is pre-configured, valid, and accessible.
+  return new GoogleGenAI({ apiKey: process.env.API_KEY });
 };
 
 const modelFlash = 'gemini-3-flash-preview'; 
